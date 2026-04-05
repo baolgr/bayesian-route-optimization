@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="report/Rapport_Projet_ST7.pdf">Full Report (FR)</a> ·
+  <a href="report/report_bayesian_optimisation_route.pdf">Full Report (FR)</a> ·
   <a href="#method">Method</a> ·
   <a href="#results">Results</a>
 </p>
