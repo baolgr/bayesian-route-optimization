@@ -38,7 +38,7 @@ J(γ) = ∫_γ R(x) dx  +  ∫₀¹ g(z'(t)) dt
 
 ## Method
 
-![Pipeline](results/figures/pipeline_overview.jpeg)
+![Pipeline](results/figures/pipeline_overview.jpg)
 
 ### 1 — Domain Discretization
 
