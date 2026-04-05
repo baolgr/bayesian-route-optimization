@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="report/Rapport_Projet_ST7.pdf">📄 Full Report (FR)</a> ·
+  <a href="report/Rapport_Projet_ST7.pdf">Full Report (FR)</a> ·
   <a href="#method">Method</a> ·
   <a href="#results">Results</a>
 </p>
@@ -15,17 +15,17 @@
 
 ## TL;DR
 
-We solve a safety-critical path-planning problem — transporting unstable WWII-era explosive ordnance through a dense urban environment — by combining **Gaussian Process surrogate modeling (Kriging)** with **Efficient Global Optimization (EGO)**. The surrogate approximates an expensive blast-damage cost function (full shock-wave simulation per point), reducing the required number of physics evaluations by an order of magnitude while producing a provably risk-minimizing route. The pipeline runs on the **CEA supercomputer** with MPI-parallelized simulations and batch-sequential infill via the Constant Liar heuristic.
+We solve a safety-critical path-planning problem — transporting unstable explosive material through a dense urban environment — by combining **Gaussian Process surrogate modeling (Kriging)** with **Efficient Global Optimization (EGO)**. The surrogate approximates an expensive blast-damage cost function (full shock-wave simulation per point), reducing the required number of physics evaluations by an order of magnitude while producing a provably risk-minimizing route. The pipeline runs on the **CEA supercomputer** with parallelized simulations and batch-sequential infill via the Constant Liar heuristic.
 
 ---
 
 ## Problem Statement
 
-When unexploded ordnance is discovered in an urban zone, it must be transported to a safe disposal site along a route that **minimizes cumulative damage risk** to surrounding infrastructure. The risk at any point depends on the blast overpressure field (governed by the Friedlander equation), the spatial distribution of buildings, and their strategic criticality (hospitals, schools, residential, industrial).
+When unexploded ordnance is discovered in an urban zone, it must be transported to a safe disposal site along a route that **minimizes cumulative damage risk** to surrounding infrastructure. The risk at any point depends on the blast overpressure field, the spatial distribution of buildings, and their strategic criticality (hospitals, schools, residential, industrial).
 
-The core computational challenge: evaluating the risk at a single candidate explosion point requires a **full 2D/3D blast-wave simulation** (CEA's ARMEN solver), with runtimes of 45 s–5 min per point depending on mesh resolution. Exhaustive evaluation over a city-scale grid with thousands of nodes is intractable under the operational constraint of **< 24 h total compute time**.
+The core computational challenge: evaluating the risk at a single candidate explosion point requires a **full 2D/3D blast-wave simulation** (CEA's ARMEN solver), with runtimes of 45 s–15 min per point depending on mesh resolution. Exhaustive evaluation over a city-scale grid with thousands of nodes is intractable under the operational constraint of **< 24 h total compute time**.
 
-**Objective.** Find $\gamma^* = \operatorname{argmin} J(\gamma)$ over all admissible paths, where:
+**Objective.** Find $\gamma^* = \arg\min J(\gamma)$ over all admissible paths, where:
 
 $$J(\gamma) = \int_{\gamma} R(x)\,\mathrm{d}x \;+\; \int_0^1 g\!\left(z'(t)\right)\mathrm{d}t$$
 
@@ -63,7 +63,7 @@ $$k(x, x') = \sigma^2 \left(1 + \sqrt{5}\,r + \tfrac{5r^2}{3}\right) \exp\!\left
 
 **Why Kriging over deterministic regression?** A key mathematical insight motivates this choice: global approximation error convergence does *not* imply convergence of the extrema locations (Jones, 2001):
 
-$$\|f - \hat{f}\| \to 0 \;\not\!\!\!\implies\; \|\operatorname{argmin}(f) - \operatorname{argmin}(\hat{f})\| \to 0$$
+$$\|f - \hat{f}\| \to 0 \;\not\!\!\!\implies\; \|\arg\min(f) - \arg\min(\hat{f})\| \to 0$$
 
 The GP posterior provides both a **prediction** $m_n(x)$ (exact interpolant at observed points) and a **calibrated uncertainty** $s_n^2(x)$ that quantifies epistemic ignorance — enabling principled allocation of the simulation budget.
 
